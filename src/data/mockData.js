@@ -60,55 +60,57 @@ export const mockEvents = [
   {
     id: 1,
     title: "Community Garden Cleanup",
-    description: "Help clean up and prepare the garden for fall planting.",
+    description: "Help clean up and prepare the garden for fall planting. Please bring gloves and gardening tools if you have them.",
     category: "Cleanup",
     location: "Community Garden, 123 Green St",
-    date: "Sep 5, 2026",
-    time: "9:00 am - 12:00 pm",
+    date: "2026-09-05",
+    startTime: "09:00",
+    endTime: "12:00",
     volunteersNeeded: 15,
     volunteersSigned: 8,
+    volunteerSignup: "yes",
     image: "🌱"
   },
   {
     id: 2,
     title: "Neighborhood Watch Workshop",
-    description: "Learn how to keep your neighborhood safe with Community Watch.",
+    description: "Learn how to keep your neighborhood safe with Community Watch. Guest speakers from local law enforcement.",
     category: "Workshop",
     location: "Community Center, 456 Oak Ave",
-    date: "Sep 12, 2026",
-    time: "6:30 pm - 8:30 pm",
+    date: "2026-09-12",
+    startTime: "18:30",
+    endTime: "20:30",
     volunteersNeeded: 10,
     volunteersSigned: 6,
+    volunteerSignup: "yes",
     image: "👮"
   },
   {
     id: 3,
     title: "Park Bench Painting",
-    description: "Help paint and restore park benches in Memorial Park.",
+    description: "Help paint and restore park benches in Memorial Park. All supplies provided. Lunch included!",
     category: "Cleanup",
     location: "Memorial Park, 789 Park Blvd",
-    date: "Sep 19, 2026",
-    time: "10:00 am - 2:00 pm",
+    date: "2026-09-19",
+    startTime: "10:00",
+    endTime: "14:00",
     volunteersNeeded: 20,
     volunteersSigned: 12,
+    volunteerSignup: "yes",
     image: "🎨"
   },
   {
     id: 4,
     title: "Food Drive Fundraiser",
-    description: "Collecting non-perishable food items for the local food bank.",
+    description: "Collecting non-perishable food items for the local food bank. Volunteers needed for sorting and packing.",
     category: "Fundraiser",
     location: "City Hall, 100 Main St",
-    date: "Sep 26, 2026",
-    time: "8:00 am - 6:00 pm",
+    date: "2026-09-26",
+    startTime: "08:00",
+    endTime: "18:00",
     volunteersNeeded: 8,
     volunteersSigned: 5,
+    volunteerSignup: "yes",
     image: "🍲"
   }
 ];
-
-export const currentUser = {
-  name: "Thandi Nhlapo",
-  location: "📍13 Dube Street, Orlando West, City of Johannesburg Municipality",
-  avatar: "👩‍🦰"
-};

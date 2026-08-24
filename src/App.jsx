@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, FileText, Calendar, Plus, Search } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  FileText, 
+  Calendar, 
+  Plus, 
+  Search, 
+  CalendarPlus,
+  Store,
+  MapPin
+} from 'lucide-react';
 import Dashboard from './pages/Dashboard';
 import Reports from './pages/Reports';
 import NewReport from './pages/NewReport';
 import Events from './pages/Events';
 import TrackIssue from './pages/TrackIssue';
+import PostEvent from './pages/PostEvent';
+import AddBusiness from './pages/AddBusiness';
+import FindBusinesses from './pages/FindBusinesses';
 import Login from './pages/Login';
 import './App.css';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // ← Changed to false
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
   const [currentPage, setCurrentPage] = useState('dashboard');
 
@@ -34,6 +46,12 @@ function App() {
         return <Events />;
       case 'track':
         return <TrackIssue />;
+      case 'post-event':
+        return <PostEvent />;
+      case 'add-business':
+        return <AddBusiness />;
+      case 'find-businesses':
+        return <FindBusinesses />;
       default:
         return <Dashboard userName={userName} />;
     }
@@ -74,6 +92,27 @@ function App() {
           >
             <Calendar size={20} />
             <span>Events</span>
+          </button>
+          <button 
+            className={`nav-item ${currentPage === 'post-event' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('post-event')}
+          >
+            <CalendarPlus size={20} />
+            <span>Post Event</span>
+          </button>
+          <button 
+            className={`nav-item ${currentPage === 'find-businesses' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('find-businesses')}
+          >
+            <MapPin size={20} />
+            <span>Find Businesses Near Me</span>
+          </button>
+          <button 
+            className={`nav-item ${currentPage === 'add-business' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('add-business')}
+          >
+            <Store size={20} />
+            <span>Add My Business</span>
           </button>
         </nav>
 
