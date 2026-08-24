@@ -9,7 +9,7 @@ import Login from './pages/Login';
 import './App.css';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // ← Changed to false
   const [userName, setUserName] = useState('');
   const [currentPage, setCurrentPage] = useState('dashboard');
 
@@ -89,7 +89,7 @@ function App() {
           <div className="user-info">
             <span className="user-avatar">👤</span>
             <div className="user-details">
-              <span className="user-name">{userName}</span>
+              <span className="user-name">{userName || 'Guest'}</span>
               <span className="user-location">📍 Your location</span>
             </div>
           </div>
