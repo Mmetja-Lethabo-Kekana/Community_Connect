@@ -52,11 +52,80 @@ export default function Dashboard({ userName }) {
   const [mapZoom, setMapZoom] = useState(13);
   const [selectedReport, setSelectedReport] = useState(null);
   const [viewMode, setViewMode] = useState('map');
-  const [locationStatus, setLocationStatus] = useState('Loading location...');
+  const [locationStatus, setLocationStatus] = useState('loading');
   const [userAddress, setUserAddress] = useState('');
 
   // Default location (will be used if geolocation fails)
   const defaultLocation = [-26.2041, 28.0473]; // Johannesburg, South Africa
+
+  // Fetch detailed address from coordinates (reverse geocoding)
+  const fetchAddress = async (lat, lng) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+      );
+      const data = await response.json();
+      
+      if (data.address) {
+        const address = data.address;
+        
+        // Extract detailed address components
+        const suburb = address.suburb || address.neighbourhood || address.quarter || '';
+        const city = address.city || address.town || address.village || '';
+        const municipality = address.municipality || address.city_district || address.county || '';
+        const state = address.state || address.province || '';
+        const country = address.country || '';
+        
+        // Build the full location string
+        let fullLocation = '';
+        
+        if (suburb) {
+          fullLocation += suburb;
+        }
+        
+        if (municipality && municipality !== suburb) {
+          if (fullLocation) fullLocation += ', ';
+          fullLocation += municipality;
+        }
+        
+        if (city && city !== municipality && city !== suburb) {
+          if (fullLocation) fullLocation += ', ';
+          fullLocation += city;
+        }
+        
+        if (state && state !== city) {
+          if (fullLocation) fullLocation += ', ';
+          fullLocation += state;
+        }
+        
+        // If we have a very specific location, use it
+        if (suburb || municipality || city) {
+          setUserAddress(fullLocation || 'Your location');
+          setLocationStatus('found');
+        } else {
+          // Fallback to display name
+          const displayName = data.display_name || 'Your location';
+          const parts = displayName.split(',');
+          const shortAddress = parts.slice(0, 3).join(',').trim();
+          setUserAddress(shortAddress || 'Your location');
+          setLocationStatus('found');
+        }
+        
+        // Update the sidebar location
+        const sidebarLocation = document.querySelector('.user-location');
+        if (sidebarLocation) {
+          sidebarLocation.textContent = `📍 ${fullLocation || 'Your location'}`;
+        }
+      } else {
+        setUserAddress('Your location');
+        setLocationStatus('found');
+      }
+    } catch (error) {
+      console.warn('Could not fetch address:', error);
+      setUserAddress('Your location');
+      setLocationStatus('found');
+    }
+  };
 
   // Get user's location
   useEffect(() => {
@@ -65,14 +134,14 @@ export default function Dashboard({ userName }) {
         (position) => {
           const { latitude, longitude } = position.coords;
           setMapCenter([latitude, longitude]);
-          setLocationStatus('Location found! ✅');
+          setLocationStatus('loading');
           fetchAddress(latitude, longitude);
         },
         (error) => {
           console.warn('Geolocation error:', error);
           setMapCenter(defaultLocation);
-          setLocationStatus('Using default location');
-          setUserAddress('Johannesburg, South Africa (Default)');
+          setLocationStatus('error');
+          setUserAddress('Johannesburg, South Africa');
         },
         {
           enableHighAccuracy: true,
@@ -82,35 +151,10 @@ export default function Dashboard({ userName }) {
       );
     } else {
       setMapCenter(defaultLocation);
-      setLocationStatus('Geolocation not supported, using default');
-      setUserAddress('Johannesburg, South Africa (Default)');
+      setLocationStatus('error');
+      setUserAddress('Johannesburg, South Africa');
     }
   }, []);
-
-  // Fetch address from coordinates (reverse geocoding)
-  const fetchAddress = async (lat, lng) => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`
-      );
-      const data = await response.json();
-      if (data.display_name) {
-        const addressParts = data.display_name.split(',');
-        const city = addressParts[addressParts.length - 3] || addressParts[0];
-        const fullAddress = city.trim();
-        setUserAddress(fullAddress);
-        
-        // Update the sidebar location too
-        const sidebarLocation = document.querySelector('.user-location');
-        if (sidebarLocation) {
-          sidebarLocation.textContent = `📍 ${fullAddress}`;
-        }
-      }
-    } catch (error) {
-      console.warn('Could not fetch address:', error);
-      setUserAddress('Your location');
-    }
-  };
 
   // Generate mock locations for reports (spread around the map center)
   const reportsWithLocations = mockReports.map((report, index) => {
@@ -134,8 +178,8 @@ export default function Dashboard({ userName }) {
       <div className="dashboard-container">
         <div className="loading-location">
           <div className="loading-spinner">📍</div>
-          <p>Finding your location...</p>
-          <p className="loading-subtext">Please allow location access when prompted</p>
+          <p>Finding your exact location...</p>
+          <p className="loading-subtext">Please allow location access for a more specific address</p>
         </div>
       </div>
     );
@@ -151,7 +195,11 @@ export default function Dashboard({ userName }) {
         </div>
         <div className="location-badge">
           <span>📍 {userAddress || 'Finding your location...'}</span>
-          <span className="location-status">{locationStatus}</span>
+          <span className={`location-status ${locationStatus}`}>
+            {locationStatus === 'loading' && '⏳ Loading...'}
+            {locationStatus === 'found' && '✅ Found'}
+            {locationStatus === 'error' && '📍 Default'}
+          </span>
         </div>
       </div>
 
