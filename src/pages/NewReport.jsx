@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { generateReferenceNumber } from '../utils/referenceGenerator';
+import { saveReport } from '../utils/reportStorage';
 
 export default function NewReport() {
   const [formData, setFormData] = useState({
@@ -32,7 +33,10 @@ export default function NewReport() {
       status: 'Submitted'
     };
 
-    console.log('Report submitted:', newReport);
+    // Save to localStorage
+    saveReport(newReport);
+    
+    console.log('Report submitted and saved:', newReport);
     
     // Store the submitted report data
     setSubmittedReport(newReport);
@@ -79,7 +83,7 @@ export default function NewReport() {
       <h2>📝 Submit a New Issue</h2>
       
       <form onSubmit={handleSubmit}>
-        {/* Category - Now first */}
+        {/* Category */}
         <div className="form-group">
           <label>Category *</label>
           <select
@@ -95,7 +99,7 @@ export default function NewReport() {
           </select>
         </div>
 
-        {/* Location - Now second */}
+        {/* Location */}
         <div className="form-group">
           <label>Location *</label>
           <input
@@ -108,7 +112,7 @@ export default function NewReport() {
           />
         </div>
 
-        {/* Description - Now third */}
+        {/* Description */}
         <div className="form-group">
           <label>Description *</label>
           <textarea
@@ -120,7 +124,7 @@ export default function NewReport() {
           />
         </div>
 
-        {/* Photo Upload - Now last */}
+        {/* Photo Upload */}
         <div className="form-group">
           <label>Photo (Optional)</label>
           <div className="upload-zone">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { generateReferenceNumber } from '../utils/referenceGenerator';
+import { saveReport } from '../utils/reportStorage';
 
 export default function UrgentReportModal({ isOpen, onClose }) {
   const [formData, setFormData] = useState({
@@ -38,7 +39,10 @@ export default function UrgentReportModal({ isOpen, onClose }) {
       status: 'In Progress'
     };
 
-    console.log('Urgent report submitted:', newReport);
+    // Save to localStorage
+    saveReport(newReport);
+    
+    console.log('Urgent report submitted and saved:', newReport);
     
     setSubmittedReport(newReport);
     setSubmitted(true);
