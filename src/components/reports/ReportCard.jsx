@@ -14,6 +14,7 @@ export default function ReportCard({ report }) {
       <div className="report-card-header">
         <div>
           <div className="report-card-title">{report.title}</div>
+          <div className="report-card-ref">🔑 Ref: {report.referenceNumber || 'N/A'}</div>
           <div className="report-card-location">📍 {report.location}</div>
           <div className="report-card-date">
             {report.date} · {report.time}

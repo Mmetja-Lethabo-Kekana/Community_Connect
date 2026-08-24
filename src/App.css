@@ -1681,3 +1681,18 @@ textarea.form-input {
   color: #6b7280 !important;
   font-weight: normal !important;
 }
+
+/* ===== REPORT CARD WITH REFERENCE ===== */
+.report-card-ref {
+  font-size: 13px;
+  color: #4f46e5;
+  font-weight: 500;
+  margin-top: 2px;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
+
+.report-card-ref:hover {
+  color: #4338ca;
+  cursor: pointer;
+}

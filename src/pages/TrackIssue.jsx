@@ -8,7 +8,6 @@ export default function TrackIssue() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Add any new reports submitted during this session to the mock data
-  // In a real app, this would query a database
   const allReports = [...mockReports];
 
   const handleSearch = (e) => {
@@ -19,7 +18,8 @@ export default function TrackIssue() {
     // Simulate API delay
     setTimeout(() => {
       const found = allReports.find(
-        report => report.referenceNumber.toLowerCase() === referenceNumber.trim().toLowerCase()
+        report => report.referenceNumber && 
+        report.referenceNumber.toLowerCase() === referenceNumber.trim().toLowerCase()
       );
       
       if (found) {
@@ -85,7 +85,7 @@ export default function TrackIssue() {
           <div className="track-result-header">
             <div>
               <h2>{searchedReport.title}</h2>
-              <div className="track-ref-number">{searchedReport.referenceNumber}</div>
+              <div className="track-ref-number">🔑 {searchedReport.referenceNumber}</div>
             </div>
             <div className="track-status-badge" style={{ backgroundColor: getStatusColor(searchedReport.status) }}>
               <span>{getStatusIcon(searchedReport.status)}</span>
