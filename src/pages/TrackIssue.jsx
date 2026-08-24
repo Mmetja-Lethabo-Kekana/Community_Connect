@@ -1,33 +1,44 @@
 import React, { useState } from 'react';
-import { mockReports } from '../data/mockData';
+import { findReportByReference, getAllReports } from '../utils/reportStorage';
 
 export default function TrackIssue() {
   const [referenceNumber, setReferenceNumber] = useState('');
   const [searchedReport, setSearchedReport] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // Add any new reports submitted during this session to the mock data
-  const allReports = [...mockReports];
+  const [debugInfo, setDebugInfo] = useState('');
 
   const handleSearch = (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setDebugInfo('');
+    
+    // Check if reference number is valid format
+    const refPattern = /^(CVP|URG)-\d{4}-\d{3}$/i;
+    if (!refPattern.test(referenceNumber.trim())) {
+      setError('Invalid reference number format. Expected format: CVP-2026-XXX or URG-2026-XXX');
+      setIsLoading(false);
+      return;
+    }
     
     // Simulate API delay
     setTimeout(() => {
-      const found = allReports.find(
-        report => report.referenceNumber && 
-        report.referenceNumber.toLowerCase() === referenceNumber.trim().toLowerCase()
-      );
+      // Get all reports for debugging
+      const allReports = getAllReports();
+      console.log('All reports in TrackIssue:', allReports);
+      
+      // Find the report
+      const found = findReportByReference(referenceNumber);
       
       if (found) {
         setSearchedReport(found);
         setError('');
+        setDebugInfo(`✅ Found report: ${found.referenceNumber}`);
       } else {
         setSearchedReport(null);
         setError('No report found with this reference number. Please check and try again.');
+        setDebugInfo(`❌ Not found in ${allReports.length} total reports`);
       }
       setIsLoading(false);
     }, 800);
@@ -72,6 +83,18 @@ export default function TrackIssue() {
             </button>
           </div>
         </form>
+        {debugInfo && (
+          <div style={{ 
+            marginTop: '8px', 
+            fontSize: '12px', 
+            color: '#6b7280',
+            background: '#f3f4f6',
+            padding: '4px 12px',
+            borderRadius: '4px'
+          }}>
+            {debugInfo}
+          </div>
+        )}
       </div>
 
       {error && (
