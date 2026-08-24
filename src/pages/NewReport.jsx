@@ -79,37 +79,9 @@ export default function NewReport() {
       <h2>📝 Submit a New Issue</h2>
       
       <form onSubmit={handleSubmit}>
-        {/* Photo Upload */}
+        {/* Category - Now first */}
         <div className="form-group">
-          <label>Photo</label>
-          <div className="upload-zone">
-            <span className="icon">📷</span>
-            <span className="text">Click to upload a photo</span>
-            <input 
-              type="file" 
-              accept="image/*" 
-              style={{ display: 'none' }} 
-              id="photo-upload"
-            />
-          </div>
-        </div>
-
-        {/* Location */}
-        <div className="form-group">
-          <label>Location</label>
-          <input
-            type="text"
-            className="form-input"
-            placeholder="Enter street address or intersection"
-            value={formData.location}
-            onChange={(e) => setFormData({...formData, location: e.target.value})}
-            required
-          />
-        </div>
-
-        {/* Category */}
-        <div className="form-group">
-          <label>Category</label>
+          <label>Category *</label>
           <select
             className="form-input form-select"
             value={formData.category}
@@ -123,9 +95,22 @@ export default function NewReport() {
           </select>
         </div>
 
-        {/* Description */}
+        {/* Location - Now second */}
         <div className="form-group">
-          <label>Description</label>
+          <label>Location *</label>
+          <input
+            type="text"
+            className="form-input"
+            placeholder="Enter street address or intersection"
+            value={formData.location}
+            onChange={(e) => setFormData({...formData, location: e.target.value})}
+            required
+          />
+        </div>
+
+        {/* Description - Now third */}
+        <div className="form-group">
+          <label>Description *</label>
           <textarea
             className="form-input"
             placeholder="Describe the issue in detail..."
@@ -133,6 +118,21 @@ export default function NewReport() {
             onChange={(e) => setFormData({...formData, description: e.target.value})}
             required
           />
+        </div>
+
+        {/* Photo Upload - Now last */}
+        <div className="form-group">
+          <label>Photo (Optional)</label>
+          <div className="upload-zone">
+            <span className="icon">📷</span>
+            <span className="text">Click to upload a photo</span>
+            <input 
+              type="file" 
+              accept="image/*" 
+              style={{ display: 'none' }} 
+              id="photo-upload"
+            />
+          </div>
         </div>
 
         <button type="submit" className="submit-btn">

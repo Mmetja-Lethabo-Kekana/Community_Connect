@@ -87,8 +87,8 @@ export default function UrgentReportModal({ isOpen, onClose }) {
       <div className="modal-content urgent-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-header-left">
-            <span className="urgent-icon-small"></span>
-            <h2>🚨URGENT REPORT</h2>
+            <span className="urgent-icon-small">🚨</span>
+            <h2>URGENT REPORT</h2>
           </div>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
@@ -98,7 +98,7 @@ export default function UrgentReportModal({ isOpen, onClose }) {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Urgent Type */}
+          {/* Urgent Type - First */}
           <div className="form-group">
             <label>Type of Urgent Issue *</label>
             <select
@@ -114,7 +114,7 @@ export default function UrgentReportModal({ isOpen, onClose }) {
             </select>
           </div>
 
-          {/* Location */}
+          {/* Location - Second */}
           <div className="form-group">
             <label>Location *</label>
             <input
@@ -127,7 +127,7 @@ export default function UrgentReportModal({ isOpen, onClose }) {
             />
           </div>
 
-          {/* Description */}
+          {/* Description - Third */}
           <div className="form-group">
             <label>Description *</label>
             <textarea
@@ -139,7 +139,7 @@ export default function UrgentReportModal({ isOpen, onClose }) {
             />
           </div>
 
-          {/* Photo Upload */}
+          {/* Photo Upload - Last */}
           <div className="form-group">
             <label>Photo (Optional)</label>
             <div className="upload-zone urgent-upload">
