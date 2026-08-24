@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import ReportCard from '../components/reports/ReportCard';
 import UrgentReportModal from '../components/UrgentReportModal';
-import { mockReports, mockEvents } from '../data/mockData';
+import { mockReports } from '../data/mockData';
 
 // Fix for default marker icons in React-Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -39,54 +39,113 @@ const getMarkerIcon = (status) => {
 function MapController({ center, zoom }) {
   const map = useMap();
   useEffect(() => {
-    map.setView(center, zoom);
+    if (center) {
+      map.setView(center, zoom);
+    }
   }, [center, zoom, map]);
   return null;
 }
 
 export default function Dashboard() {
   const [isUrgentModalOpen, setIsUrgentModalOpen] = useState(false);
-  const [mapCenter, setMapCenter] = useState([40.7128, -74.0060]); // Default: NYC
+  const [mapCenter, setMapCenter] = useState(null); // Start with null
   const [mapZoom, setMapZoom] = useState(13);
   const [selectedReport, setSelectedReport] = useState(null);
-  const [viewMode, setViewMode] = useState('map'); // 'map' or 'list'
+  const [viewMode, setViewMode] = useState('map');
+  const [locationStatus, setLocationStatus] = useState('Loading location...');
+  const [userAddress, setUserAddress] = useState('');
 
-  // In a real app, you'd get the user's location
-  // For demo, we'll use a default location
+  // Default location (will be used if geolocation fails)
+  const defaultLocation = [-26.2041, 28.0473]; // Johannesburg, South Africa
+
+  // Get user's location
   useEffect(() => {
-    // Simulate getting user's location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setMapCenter([position.coords.latitude, position.coords.longitude]);
+          const { latitude, longitude } = position.coords;
+          setMapCenter([latitude, longitude]);
+          setLocationStatus('Location found! ✅');
+          // Get address from coordinates (reverse geocoding)
+          fetchAddress(latitude, longitude);
         },
-        () => {
-          // Default location if geolocation fails
-          setMapCenter([40.7128, -74.0060]);
+        (error) => {
+          console.warn('Geolocation error:', error);
+          setMapCenter(defaultLocation);
+          setLocationStatus('Using default location');
+          setUserAddress('Johannesburg, South Africa (Default)');
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
         }
       );
+    } else {
+      setMapCenter(defaultLocation);
+      setLocationStatus('Geolocation not supported, using default');
+      setUserAddress('Johannesburg, South Africa (Default)');
     }
   }, []);
 
+  // Fetch address from coordinates (reverse geocoding)
+  const fetchAddress = async (lat, lng) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`
+      );
+      const data = await response.json();
+      if (data.display_name) {
+        // Extract city/area from the full address
+        const addressParts = data.display_name.split(',');
+        const city = addressParts[addressParts.length - 3] || addressParts[0];
+        setUserAddress(city.trim());
+      }
+    } catch (error) {
+      console.warn('Could not fetch address:', error);
+      setUserAddress('Your location');
+    }
+  };
+
   // Generate mock locations for reports (spread around the map center)
   const reportsWithLocations = mockReports.map((report, index) => {
-    const latOffset = (Math.random() - 0.5) * 0.02;
-    const lngOffset = (Math.random() - 0.5) * 0.02;
+    // Use a seed based on index to generate consistent locations
+    const seed = index * 0.001;
+    const latOffset = (Math.random() - 0.5) * 0.02 + seed;
+    const lngOffset = (Math.random() - 0.5) * 0.02 + seed;
+    
+    const center = mapCenter || defaultLocation;
     return {
       ...report,
-      latitude: mapCenter[0] + latOffset,
-      longitude: mapCenter[1] + lngOffset,
+      latitude: center[0] + latOffset,
+      longitude: center[1] + lngOffset,
     };
   });
 
   // All reports (community-wide view)
   const allReports = reportsWithLocations;
 
-  // Recent reports for the list view
-  const recentReports = allReports.slice(0, 4);
+  // Show loading state
+  if (!mapCenter) {
+    return (
+      <div className="dashboard-container">
+        <div className="loading-location">
+          <div className="loading-spinner">📍</div>
+          <p>Finding your location...</p>
+          <p className="loading-subtext">Please allow location access when prompted</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
+      {/* Location Banner */}
+      <div className="location-banner">
+        <span>📍 {userAddress || 'Your location'}</span>
+        <span className="location-status">{locationStatus}</span>
+      </div>
+
       {/* Urgent Banner */}
       <div className="urgent-banner">
         <div className="urgent-content">

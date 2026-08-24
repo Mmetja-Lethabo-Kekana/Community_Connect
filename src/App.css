@@ -1361,3 +1361,67 @@ textarea.form-input {
     font-size: 14px;
   }
 }
+
+
+/* ===== LOCATION BANNER ===== */
+.location-banner {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #4b5563;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.location-banner span:first-child {
+  font-weight: 500;
+  color: #1a1a2e;
+}
+
+.location-status {
+  font-size: 12px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+/* ===== LOADING LOCATION ===== */
+.loading-location {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.loading-spinner {
+  font-size: 48px;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.loading-location p {
+  margin: 8px 0;
+  color: #1a1a2e;
+  font-weight: 500;
+}
+
+.loading-subtext {
+  font-size: 14px !important;
+  color: #6b7280 !important;
+  font-weight: normal !important;
+}
