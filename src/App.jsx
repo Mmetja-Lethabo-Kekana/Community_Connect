@@ -43,7 +43,7 @@ function App() {
     <div className="app">
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h1 className="logo">🏛️ CivicPulse</h1>
+          <h1 className="logo">🏛️ Community Connect</h1>
         </div>
         
         <nav className="sidebar-nav">
