@@ -46,9 +46,9 @@ function MapController({ center, zoom }) {
   return null;
 }
 
-export default function Dashboard() {
+export default function Dashboard({ userName }) {
   const [isUrgentModalOpen, setIsUrgentModalOpen] = useState(false);
-  const [mapCenter, setMapCenter] = useState(null); // Start with null
+  const [mapCenter, setMapCenter] = useState(null);
   const [mapZoom, setMapZoom] = useState(13);
   const [selectedReport, setSelectedReport] = useState(null);
   const [viewMode, setViewMode] = useState('map');
@@ -66,7 +66,6 @@ export default function Dashboard() {
           const { latitude, longitude } = position.coords;
           setMapCenter([latitude, longitude]);
           setLocationStatus('Location found! ✅');
-          // Get address from coordinates (reverse geocoding)
           fetchAddress(latitude, longitude);
         },
         (error) => {
@@ -96,10 +95,16 @@ export default function Dashboard() {
       );
       const data = await response.json();
       if (data.display_name) {
-        // Extract city/area from the full address
         const addressParts = data.display_name.split(',');
         const city = addressParts[addressParts.length - 3] || addressParts[0];
-        setUserAddress(city.trim());
+        const fullAddress = city.trim();
+        setUserAddress(fullAddress);
+        
+        // Update the sidebar location too
+        const sidebarLocation = document.querySelector('.user-location');
+        if (sidebarLocation) {
+          sidebarLocation.textContent = `📍 ${fullAddress}`;
+        }
       }
     } catch (error) {
       console.warn('Could not fetch address:', error);
@@ -109,7 +114,6 @@ export default function Dashboard() {
 
   // Generate mock locations for reports (spread around the map center)
   const reportsWithLocations = mockReports.map((report, index) => {
-    // Use a seed based on index to generate consistent locations
     const seed = index * 0.001;
     const latOffset = (Math.random() - 0.5) * 0.02 + seed;
     const lngOffset = (Math.random() - 0.5) * 0.02 + seed;
@@ -122,7 +126,6 @@ export default function Dashboard() {
     };
   });
 
-  // All reports (community-wide view)
   const allReports = reportsWithLocations;
 
   // Show loading state
@@ -140,10 +143,16 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      {/* Location Banner */}
-      <div className="location-banner">
-        <span>📍 {userAddress || 'Your location'}</span>
-        <span className="location-status">{locationStatus}</span>
+      {/* Welcome Banner */}
+      <div className="welcome-banner">
+        <div>
+          <h1 className="welcome-title">👋 Welcome, {userName}!</h1>
+          <p className="welcome-subtitle">Here's what's happening in your community</p>
+        </div>
+        <div className="location-badge">
+          <span>📍 {userAddress || 'Finding your location...'}</span>
+          <span className="location-status">{locationStatus}</span>
+        </div>
       </div>
 
       {/* Urgent Banner */}

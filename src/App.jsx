@@ -5,15 +5,27 @@ import Reports from './pages/Reports';
 import NewReport from './pages/NewReport';
 import Events from './pages/Events';
 import TrackIssue from './pages/TrackIssue';
+import Login from './pages/Login';
 import './App.css';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
   const [currentPage, setCurrentPage] = useState('dashboard');
+
+  const handleLogin = (name) => {
+    setUserName(name);
+    setIsLoggedIn(true);
+  };
+
+  if (!isLoggedIn) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   const renderPage = () => {
     switch(currentPage) {
       case 'dashboard':
-        return <Dashboard />;
+        return <Dashboard userName={userName} />;
       case 'reports':
         return <Reports />;
       case 'new-report':
@@ -23,7 +35,7 @@ function App() {
       case 'track':
         return <TrackIssue />;
       default:
-        return <Dashboard />;
+        return <Dashboard userName={userName} />;
     }
   };
 
@@ -31,7 +43,7 @@ function App() {
     <div className="app">
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h1 className="logo">🏛️ Community Connect</h1>
+          <h1 className="logo">🏛️ CivicPulse</h1>
         </div>
         
         <nav className="sidebar-nav">
@@ -75,12 +87,15 @@ function App() {
 
         <div className="sidebar-footer">
           <div className="user-info">
-            <span className="user-avatar">👩</span>
+            <span className="user-avatar">👤</span>
             <div className="user-details">
-              <span className="user-name">Thandi Nhalapo</span>
-              <span className="user-location">📍13 Dube Street, Orlando West, City of Johannesburg Municipality </span>
+              <span className="user-name">{userName}</span>
+              <span className="user-location">📍 Your location</span>
             </div>
           </div>
+          <button className="logout-btn" onClick={() => setIsLoggedIn(false)}>
+            Logout
+          </button>
         </div>
       </aside>
 
